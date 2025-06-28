@@ -1,0 +1,1 @@
+Mock stock trading app
