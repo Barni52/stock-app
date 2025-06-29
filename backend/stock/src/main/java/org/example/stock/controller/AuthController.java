@@ -25,11 +25,12 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authManager;
-    @Autowired private JwtUtil jwtUtil;
-    @Autowired private StockUserDetailsService userDetailsService;
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private StockUserDetailsService userDetailsService;
     @Autowired
     private StockUserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
     @PostMapping("/login")
@@ -49,12 +50,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
-        if(userRepository.findByUsername(request.getUsername()) != null) {
+        if(userRepository.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
         }
         StockUser newUser = new StockUser();
         newUser.setUsername(request.getUsername());
-        // hash the password
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         newUser.setBalance(0);
 
