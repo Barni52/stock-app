@@ -1,5 +1,6 @@
 package org.example.stock.service;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -8,16 +9,21 @@ public class TwelveDataService {
 
     private final RestTemplate restTemplate;
 
-    private String apiKey = "DFQWETX46FSABIMB";
-
     public TwelveDataService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public String getIntradayStockData(String symbol) {
-        String url = "https://api.twelvedata.com/time_series?apikey=&outputsize=16"
+
+        Dotenv dotenv = Dotenv.load();
+
+        String apiKey = dotenv.get("API_KEY");
+
+        String url = "https://api.twelvedata.com/time_series?"
+                +"apikey=" + apiKey
                 + "&symbol=" + symbol
-                + "&interval=30min";
+                + "&interval=30min"
+                + "&outputsize=16";
 
         return restTemplate.getForObject(url, String.class);
     }

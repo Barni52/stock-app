@@ -1,6 +1,9 @@
 package org.example.stock.controller;
 
+import org.example.stock.model.Stock;
+import org.example.stock.repository.StockRepository;
 import org.example.stock.repository.StockUserRepository;
+import org.example.stock.service.StockParsingService;
 import org.example.stock.service.TwelveDataService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,10 +22,17 @@ public class HomeController {
 
     private final StockUserRepository userRepository;
     private final TwelveDataService twelveDataService;
+    private final StockRepository stockRepository;
+    private final StockParsingService stockParsingService;
 
-    public HomeController(StockUserRepository userRepository, TwelveDataService twelveDataService) {
+    public HomeController(StockUserRepository userRepository,
+                          TwelveDataService twelveDataService,
+                          StockRepository stockRepository,
+                          StockParsingService stockParsingService) {
         this.userRepository = userRepository;
         this.twelveDataService = twelveDataService;
+        this.stockRepository = stockRepository;
+        this.stockParsingService = stockParsingService;
     }
 
     @RequestMapping("/")
@@ -42,8 +52,13 @@ public class HomeController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<List<String>> getStickers(){
+    public ResponseEntity<List<String>> getStickers() {
         String data = twelveDataService.getIntradayStockData("AAPL");
+
+        Stock stock = stockParsingService.parse(data);
+
+        stockRepository.save(stock);
+
         return ResponseEntity.ok(List.of(data));
     }
 }
