@@ -1,4 +1,4 @@
-package org.example.stock.DTOs;
+package org.example.stock.DTO;
 
 public class AuthRequest {
     public String getUsername() {

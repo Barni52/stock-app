@@ -1,8 +1,8 @@
-package org.example.stock.services;
+package org.example.stock.service;
 
 
-import org.example.stock.Repositories.StockUserRepository;
-import org.example.stock.models.StockUser;
+import org.example.stock.repository.StockUserRepository;
+import org.example.stock.model.StockUser;
 import org.springframework.stereotype.Service;
 
 @Service

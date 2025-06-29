@@ -1,4 +1,4 @@
-package org.example.stock.DTOs;
+package org.example.stock.DTO;
 
 public class AuthResponse {
     public String getToken() {

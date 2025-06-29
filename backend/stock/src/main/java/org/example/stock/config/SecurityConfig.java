@@ -1,6 +1,7 @@
-package org.example.stock.configs;
+package org.example.stock.config;
 
-import org.example.stock.services.StockUserDetailsService;
+import org.example.stock.config.jwt.JwtFilter;
+import org.example.stock.service.StockUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
+                .requestMatchers("/balance/**").authenticated()
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

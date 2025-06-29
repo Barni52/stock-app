@@ -1,4 +1,4 @@
-package org.example.stock.configs;
+package org.example.stock.config.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
