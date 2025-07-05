@@ -1,19 +1,25 @@
 package org.example.stock.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class StockUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     private String username;
     private String password;
     private double balance;
+
+    @OneToMany(
+            mappedBy = "stockUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OwnedStock> ownedStocks;
 
 
     public long getId() {
@@ -46,5 +52,13 @@ public class StockUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<OwnedStock> getOwnedStocks() {
+        return ownedStocks;
+    }
+
+    public void setOwnedStocks(List<OwnedStock> ownedStocks) {
+        this.ownedStocks = ownedStocks;
     }
 }

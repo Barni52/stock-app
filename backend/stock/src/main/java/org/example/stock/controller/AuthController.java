@@ -1,7 +1,7 @@
 package org.example.stock.controller;
 
-import org.example.stock.DTO.AuthRequest;
-import org.example.stock.DTO.AuthResponse;
+import org.example.stock.dto.AuthRequest;
+import org.example.stock.dto.AuthResponse;
 import org.example.stock.repository.StockUserRepository;
 import org.example.stock.config.jwt.JwtUtil;
 import org.example.stock.model.StockUser;

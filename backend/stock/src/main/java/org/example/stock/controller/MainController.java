@@ -1,16 +1,22 @@
 package org.example.stock.controller;
 
+import org.example.stock.exception.*;
+import org.example.stock.model.StockOrder;
 import org.example.stock.model.Stock;
 import org.example.stock.model.StockUser;
+import org.example.stock.repository.OrderRepository;
 import org.example.stock.repository.StockRepository;
 import org.example.stock.repository.StockUserRepository;
 import org.example.stock.service.StockParsingService;
+import org.example.stock.service.TradingService;
 import org.example.stock.service.TwelveDataService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,16 +30,20 @@ public class MainController {
     private final StockRepository stockRepository;
     private final StockParsingService stockParsingService;
     private final StockUserRepository stockUserRepository;
+    private final OrderRepository orderRepository;
+    private final TradingService tradingService;
 
     public MainController(StockUserRepository userRepository,
                           TwelveDataService twelveDataService,
                           StockRepository stockRepository,
-                          StockParsingService stockParsingService, StockUserRepository stockUserRepository) {
+                          StockParsingService stockParsingService, StockUserRepository stockUserRepository, OrderRepository orderRepository, TradingService tradingService) {
         this.userRepository = userRepository;
         this.twelveDataService = twelveDataService;
         this.stockRepository = stockRepository;
         this.stockParsingService = stockParsingService;
         this.stockUserRepository = stockUserRepository;
+        this.orderRepository = orderRepository;
+        this.tradingService = tradingService;
     }
 
     @RequestMapping("/")
@@ -92,5 +102,51 @@ public class MainController {
             }
         }
         return ResponseEntity.status(400).build();
+    }
+
+    @PreAuthorize("#username == authentication.name")
+    @PostMapping("/order/buy/{username}")
+    @Transactional
+    public ResponseEntity<Void> makeBuyOrder(
+            @PathVariable String username,
+            @RequestParam String ticker,
+            @RequestParam Double quantity,
+            @RequestParam Double hitPrice
+    ){
+        try {
+            StockOrder stockOrder = tradingService.makeBuyOrder(username, ticker, quantity, hitPrice);
+            return ResponseEntity.ok().build();
+        } catch (IncorrectInputException e) {
+            ResponseEntity.badRequest().build();
+        } catch (UserNotFoundException | StockNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (InsufficientFundException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.status(500).build();
+    }
+
+    @PreAuthorize("#username == authentication.name")
+    @PostMapping("/order/sell/{username}")
+    @Transactional
+    public ResponseEntity<Void> makeSellOrder(
+            @PathVariable String username,
+            @RequestParam String ticker,
+            @RequestParam Double quantity,
+            @RequestParam Double hitPrice
+    ){
+        try {
+            StockOrder stockOrder = tradingService.makeSellOrder(username, ticker, quantity, hitPrice);
+            return ResponseEntity.ok().build();
+        } catch (IncorrectInputException e) {
+            ResponseEntity.badRequest().build();
+        } catch (UserNotFoundException | StockNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (InsufficientStockException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.status(500).build();
     }
 }
