@@ -152,4 +152,19 @@ public class MainController {
 
         return ResponseEntity.status(500).build();
     }
+
+    @PreAuthorize("#username == authentication.name")
+    @DeleteMapping("/order/cancel/{username}")
+    @Transactional
+    public ResponseEntity<Void> cancelOrder(
+            @PathVariable String username,
+            @RequestParam String orderId
+    ){
+        try {
+            tradingService.cancelOrder(orderId, username);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }
