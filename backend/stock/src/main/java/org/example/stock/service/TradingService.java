@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Long.parseLong;
+
 @Transactional
 @Service
 public class TradingService {
@@ -147,5 +149,47 @@ public class TradingService {
         stockUserRepository.save(stockUser);
 
         return stockOrder;
+    }
+
+    @Transactional
+    public void cancelOrder(String idjson, String username) throws UserNotFoundException {
+        Long id = parseLong(idjson);
+
+        Optional<StockOrder> orderOptional = orderRepository.findById(id);
+        Optional<StockUser> stockUserOptional = stockUserRepository.findByUsername(username);
+
+        if(orderOptional.isEmpty() || stockUserOptional.isEmpty()){
+            throw new UserNotFoundException("User or order not found");
+        }
+
+        StockUser stockUser = stockUserOptional.get();
+        StockOrder order = orderOptional.get();
+
+        if(order.getType().equals("buy")){
+            stockUser.setBalance(stockUser.getBalance() + (order.getHitPrice() * order.getQuantity()));
+            stockUserRepository.save(stockUser);
+            orderRepository.delete(order);
+            return;
+        }
+
+        if(order.getType().equals("sell")){
+            for(OwnedStock ownedStock : stockUser.getOwnedStocks()){
+                if(ownedStock.getStock().getTicker().equals(order.getStock().getTicker())){
+                    ownedStock.setQuantity(ownedStock.getQuantity() + order.getQuantity());
+                    ownedStockRepository.save(ownedStock);
+                    orderRepository.delete(order);
+                    return;
+                }
+            }
+            OwnedStock ownedStock = new OwnedStock();
+
+            ownedStock.setStockUser(stockUser);
+            ownedStock.setStock(order.getStock());
+            ownedStock.setQuantity(order.getQuantity());
+
+            ownedStockRepository.save(ownedStock);
+            orderRepository.delete(order);
+
+        }
     }
 }
