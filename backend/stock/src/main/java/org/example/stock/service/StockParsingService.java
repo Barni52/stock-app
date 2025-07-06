@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.stock.model.Stock;
 import org.example.stock.model.TimePrice;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -63,5 +65,14 @@ public class StockParsingService {
         stock.setTicker(ticker);
         stock.setTimePrice(list);
         return stock;
+    }
+
+    public Double parsePrice(String json){
+        JSONObject obj = new JSONObject(json);
+        JSONArray values = obj.getJSONArray("values");
+        JSONObject firstEntry = values.getJSONObject(0);
+        double close = Double.parseDouble(firstEntry.getString("close"));
+
+        return close;
     }
 }

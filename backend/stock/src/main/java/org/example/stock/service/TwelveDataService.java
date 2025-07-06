@@ -27,4 +27,19 @@ public class TwelveDataService {
 
         return restTemplate.getForObject(url, String.class);
     }
+
+    public String getCurrentStockPrice(String symbol) {
+
+        Dotenv dotenv = Dotenv.load();
+
+        String apiKey = dotenv.get("API_KEY");
+
+        String url = "https://api.twelvedata.com/time_series?"
+                +"apikey=" + apiKey
+                + "&symbol=" + symbol
+                + "&interval=1min"
+                + "&outputsize=1";
+
+        return restTemplate.getForObject(url, String.class);
+    }
 }

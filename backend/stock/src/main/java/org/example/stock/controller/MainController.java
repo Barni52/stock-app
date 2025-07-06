@@ -64,13 +64,16 @@ public class MainController {
 
     @GetMapping("/test")
     public ResponseEntity<List<String>> getStickers() {
-        String data = twelveDataService.getIntradayStockData("AAPL");
 
-        Stock stock = stockParsingService.parse(data);
+        String data = twelveDataService.getCurrentStockPrice("NEE");
 
-        stockRepository.save(stock);
+        System.out.println(data);
 
-        return ResponseEntity.ok(List.of(data));
+        Double price = stockParsingService.parsePrice(data);
+
+        System.out.println("The price is : " + price);
+
+        return ResponseEntity.ok(List.of("data"));
     }
 
     @PreAuthorize("#username == authentication.name")

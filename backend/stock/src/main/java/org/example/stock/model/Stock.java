@@ -11,6 +11,7 @@ import java.util.List;
 public class Stock {
     @Id
     private String ticker;
+    private Double currentPrice;
     @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TimePrice> timePrice;
 
@@ -28,5 +29,13 @@ public class Stock {
 
     public void setTimePrice(List<TimePrice> timePrice) {
         this.timePrice = timePrice;
+    }
+
+    public Double getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(Double currentPrice) {
+        this.currentPrice = currentPrice;
     }
 }
