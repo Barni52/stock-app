@@ -1,5 +1,6 @@
 package org.example.stock.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,9 +15,8 @@ public class TimePrice {
     private double price;
     @ManyToOne
     @JoinColumn(name="stock_id")
+    @JsonIgnore
     private Stock stock;
-
-
 
     public void setId(Long id) {
         this.id = id;

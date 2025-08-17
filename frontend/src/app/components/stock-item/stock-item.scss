@@ -1,0 +1,76 @@
+.stock-card {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* even spacing */
+  width: 700px;
+  height: 60px;
+  padding: 0 16px;
+  border-radius: 12px;
+  background: #1e1e1e;
+  color: #f5f5f5;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  font-family: system-ui, sans-serif;
+  margin: 0.5%;
+}
+
+.stock-card .ticker {
+  font-size: 1.2rem;
+  font-weight: 600;
+  flex: 1; /* push other items right */
+}
+
+.stock-card .price {
+  font-size: 1.1rem;
+  flex: 0;
+}
+
+.amount-input {
+  width: 90px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin: 5%;
+  border: 1px solid #333;
+  background: #2b2b2b;
+  color: #f5f5f5;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.amount-input:focus {
+  border-color: #22c55e;
+  background: #1f1f1f;
+  outline: none;
+}
+
+.amount-input::-webkit-inner-spin-button,
+.amount-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.amount-input { -moz-appearance: textfield; }
+
+.stock-card .action {
+  background: #22c55e;
+  color: #fff;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.stock-card .action:hover {
+  background: #16a34a;
+}
+
+.total-amount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #22c55e; /* matches Buy button theme */
+  margin-left: 8px;
+  min-width: 80px;
+  text-align: right;
+}

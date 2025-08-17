@@ -1,10 +1,12 @@
 package org.example.stock.controller;
 
 import org.example.stock.exception.*;
+import org.example.stock.model.OwnedStock;
 import org.example.stock.model.StockOrder;
 import org.example.stock.model.Stock;
 import org.example.stock.model.StockUser;
 import org.example.stock.repository.OrderRepository;
+import org.example.stock.repository.OwnedStockRepository;
 import org.example.stock.repository.StockRepository;
 import org.example.stock.repository.StockUserRepository;
 import org.example.stock.service.StockParsingService;
@@ -27,23 +29,26 @@ public class MainController {
 
     private final StockUserRepository userRepository;
     private final TwelveDataService twelveDataService;
-    private final StockRepository stockRepository;
     private final StockParsingService stockParsingService;
     private final StockUserRepository stockUserRepository;
-    private final OrderRepository orderRepository;
     private final TradingService tradingService;
+    private final StockRepository stockRepository;
+    private final OwnedStockRepository ownedStockRepository;
 
     public MainController(StockUserRepository userRepository,
                           TwelveDataService twelveDataService,
+                          StockParsingService stockParsingService,
+                          StockUserRepository stockUserRepository,
+                          TradingService tradingService,
                           StockRepository stockRepository,
-                          StockParsingService stockParsingService, StockUserRepository stockUserRepository, OrderRepository orderRepository, TradingService tradingService) {
+                          OwnedStockRepository ownedStockRepository) {
         this.userRepository = userRepository;
         this.twelveDataService = twelveDataService;
-        this.stockRepository = stockRepository;
         this.stockParsingService = stockParsingService;
         this.stockUserRepository = stockUserRepository;
-        this.orderRepository = orderRepository;
         this.tradingService = tradingService;
+        this.stockRepository = stockRepository;
+        this.ownedStockRepository = ownedStockRepository;
     }
 
     @RequestMapping("/")
@@ -51,7 +56,34 @@ public class MainController {
         return "index.html";
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/stock")
+    public ResponseEntity<List<Stock>> getAllStocks(){
+        return ResponseEntity.ok(stockRepository.findAll());
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("#username == authentication.name")
+    @GetMapping("/stock/owned/{username}")
+    public ResponseEntity<List<Stock>> getOwnedStocks(
+            @AuthenticationPrincipal UserDetails user,
+            @PathVariable String username){
+        Optional<StockUser> stockUserOptional = userRepository.findByUsername(username);
+
+        StockUser stockUser;
+
+        if(stockUserOptional.isPresent()){
+            stockUser = stockUserOptional.get();
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ownedStockRepository.findOwnedStocksByStockUser(stockUser)
+                .stream().map(OwnedStock::getStock).toList());
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:4200")
     @PreAuthorize("#username == authentication.name")
     @GetMapping("/balance/{username}")
     public ResponseEntity<Double> getBalance(
@@ -62,6 +94,7 @@ public class MainController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/test")
     public ResponseEntity<List<String>> getStickers() {
 
@@ -76,6 +109,8 @@ public class MainController {
         return ResponseEntity.ok(List.of("data"));
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
+
     @PreAuthorize("#username == authentication.name")
     @PutMapping("/balance/upload/{username}")
     public ResponseEntity<Void> uploadBalance(@RequestParam Double value, @PathVariable String username){
@@ -88,6 +123,8 @@ public class MainController {
         }
         return ResponseEntity.status(400).build();
     }
+
+    @CrossOrigin(origins = "http://localhost:4200")
 
     @PreAuthorize("#username == authentication.name")
     @PutMapping("/balance/withdraw/{username}")
@@ -106,6 +143,8 @@ public class MainController {
         }
         return ResponseEntity.status(400).build();
     }
+
+    @CrossOrigin(origins = "http://localhost:4200")
 
     @PreAuthorize("#username == authentication.name")
     @PostMapping("/order/buy/{username}")
@@ -130,6 +169,8 @@ public class MainController {
         return ResponseEntity.status(500).build();
     }
 
+
+    @CrossOrigin(origins = "http://localhost:4200")
     @PreAuthorize("#username == authentication.name")
     @PostMapping("/order/sell/{username}")
     @Transactional
@@ -153,6 +194,7 @@ public class MainController {
         return ResponseEntity.status(500).build();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PreAuthorize("#username == authentication.name")
     @DeleteMapping("/order/cancel/{username}")
     @Transactional

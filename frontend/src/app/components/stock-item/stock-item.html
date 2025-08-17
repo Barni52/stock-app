@@ -1,0 +1,8 @@
+<div class="stock-card">
+    <span class="ticker">{{ticker()}}</span>
+    <span class="price">{{currentPrice()}}$</span>
+    <input class="amount-input" [(ngModel)]="amount" type="number" min="1" max="10000"/>
+    <input class="amount-input" [(ngModel)]="hitPrice" type="number" min="1" max="10000"/>
+    <span class="total-amount">{{totalAmount()}}$</span>
+    <button class="action" (click)="buy(amount, hitPrice)">Buy</button>
+</div>

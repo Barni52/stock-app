@@ -1,7 +1,7 @@
 package org.example.stock.controller;
 
 import org.example.stock.dto.AuthRequest;
-import org.example.stock.dto.AuthResponse;
+import org.example.stock.dto.AuthResponse; // Make sure this is correctly imported
 import org.example.stock.repository.StockUserRepository;
 import org.example.stock.config.jwt.JwtUtil;
 import org.example.stock.model.StockUser;
@@ -33,6 +33,7 @@ public class AuthController {
     private StockUserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
@@ -40,12 +41,20 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
         } catch (AuthenticationException e) {
+            System.out.println("Authentication failed for user: " + request.getUsername() + " - " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        return ResponseEntity.ok(new AuthResponse(jwt));
+
+        // --- ADD THESE DEBUG PRINTS ---
+        System.out.println("Backend: Generated JWT for " + userDetails.getUsername() + ": " + jwt);
+        AuthResponse authResponse = new AuthResponse(jwt);
+        System.out.println("Backend: AuthResponse object before sending: " + authResponse.getToken());
+        // --- END DEBUG PRINTS ---
+
+        return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/register")
