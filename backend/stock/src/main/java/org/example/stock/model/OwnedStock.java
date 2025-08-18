@@ -1,5 +1,6 @@
 package org.example.stock.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,7 @@ public class OwnedStock {
     private Stock stock;
 
     @ManyToOne
+    @JsonBackReference
     private StockUser stockUser;
 
     private Double quantity;

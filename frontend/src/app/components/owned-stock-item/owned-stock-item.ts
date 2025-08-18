@@ -1,23 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
-import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
 import { StockService } from '../../services/stock-service';
 
-
 @Component({
-  selector: 'app-stock-item',
-  imports: [FormsModule, CommonModule],
-  templateUrl: './stock-item.html',
-  styleUrl: './stock-item.scss'
+  selector: 'app-owned-stock-item',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './owned-stock-item.html',
+  styleUrl: './owned-stock-item.scss'
 })
-export class StockItem {
+export class OwnedStockItem {
   isLoggedIn! : boolean;
-  ticker = input("non");
+  ticker = input('');
   currentPrice = input(0);
-  amount : number = 1;
-  hitPrice : number = 1.0;
+  quantity = input(0); 
+  amount : number = 0;
+  hitPrice : number = 0;
+
 
   constructor(private authService : AuthService, private stockService : StockService){}
 
@@ -27,8 +27,8 @@ export class StockItem {
 
   }
 
-  buy(amount:number, hitPrice:number){
-    this.stockService.makeBuyOrder(this.authService.getAuthenticatedUsername(), this.ticker(), amount, hitPrice)
+  sell(amount:number, hitPrice:number){
+    this.stockService.makeSellOrder(this.authService.getAuthenticatedUsername(), this.ticker(), amount, hitPrice)
   }
 
   totalAmount(){

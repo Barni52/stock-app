@@ -1,5 +1,6 @@
 package org.example.stock.controller;
 
+import org.example.stock.dto.OrderRequest;
 import org.example.stock.exception.*;
 import org.example.stock.model.OwnedStock;
 import org.example.stock.model.StockOrder;
@@ -34,6 +35,7 @@ public class MainController {
     private final TradingService tradingService;
     private final StockRepository stockRepository;
     private final OwnedStockRepository ownedStockRepository;
+    private final OrderRepository orderRepository;
 
     public MainController(StockUserRepository userRepository,
                           TwelveDataService twelveDataService,
@@ -41,7 +43,7 @@ public class MainController {
                           StockUserRepository stockUserRepository,
                           TradingService tradingService,
                           StockRepository stockRepository,
-                          OwnedStockRepository ownedStockRepository) {
+                          OwnedStockRepository ownedStockRepository, OrderRepository orderRepository) {
         this.userRepository = userRepository;
         this.twelveDataService = twelveDataService;
         this.stockParsingService = stockParsingService;
@@ -49,6 +51,7 @@ public class MainController {
         this.tradingService = tradingService;
         this.stockRepository = stockRepository;
         this.ownedStockRepository = ownedStockRepository;
+        this.orderRepository = orderRepository;
     }
 
     @RequestMapping("/")
@@ -80,6 +83,25 @@ public class MainController {
 
         return ResponseEntity.ok(ownedStockRepository.findOwnedStocksByStockUser(stockUser)
                 .stream().map(OwnedStock::getStock).toList());
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    //@PreAuthorize("#username == authentication.name")
+    @GetMapping("/stock/order/{username}")
+    public ResponseEntity<List<StockOrder>> getActiveOrders(
+            @AuthenticationPrincipal UserDetails user,
+            @PathVariable String username){
+        Optional<StockUser> stockUserOptional = userRepository.findByUsername(username);
+
+        StockUser stockUser;
+
+        if(stockUserOptional.isPresent()){
+            stockUser = stockUserOptional.get();
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(orderRepository.findStockOrderByStockUser(stockUser));
     }
 
 
@@ -145,25 +167,28 @@ public class MainController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-
-    @PreAuthorize("#username == authentication.name")
-    @PostMapping("/order/buy/{username}")
+    @PreAuthorize("#orderRequest.getUsername() == authentication.name")
+    @PostMapping("/order/buy")
     @Transactional
-    public ResponseEntity<Void> makeBuyOrder(
-            @PathVariable String username,
-            @RequestParam String ticker,
-            @RequestParam Double quantity,
-            @RequestParam Double hitPrice
-    ){
+    public ResponseEntity<Void> makeBuyOrder(@RequestBody OrderRequest orderRequest){
+        System.out.println(orderRequest.getTicker());
         try {
-            StockOrder stockOrder = tradingService.makeBuyOrder(username, ticker, quantity, hitPrice);
+            StockOrder stockOrder = tradingService.makeBuyOrder(
+                    orderRequest.getUsername(),
+                    orderRequest.getTicker(),
+                    orderRequest.getQuantity(),
+                    orderRequest.getHitPrice()
+            );
+            System.out.println("Buy done");
             return ResponseEntity.ok().build();
         } catch (IncorrectInputException e) {
             ResponseEntity.badRequest().build();
-        } catch (UserNotFoundException | StockNotFoundException e) {
-            return ResponseEntity.notFound().build();
         } catch (InsufficientFundException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(417).build();
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(426).build();
+        } catch (StockNotFoundException e) {
+            return ResponseEntity.status(427).build();
         }
 
         return ResponseEntity.status(500).build();
@@ -171,17 +196,17 @@ public class MainController {
 
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @PreAuthorize("#username == authentication.name")
-    @PostMapping("/order/sell/{username}")
+    @PreAuthorize("#orderRequest.getUsername() == authentication.name")
+    @PostMapping("/order/sell")
     @Transactional
-    public ResponseEntity<Void> makeSellOrder(
-            @PathVariable String username,
-            @RequestParam String ticker,
-            @RequestParam Double quantity,
-            @RequestParam Double hitPrice
-    ){
+    public ResponseEntity<Void> makeSellOrder(@RequestBody OrderRequest orderRequest){
         try {
-            StockOrder stockOrder = tradingService.makeSellOrder(username, ticker, quantity, hitPrice);
+            StockOrder stockOrder = tradingService.makeSellOrder(
+                    orderRequest.getUsername(),
+                    orderRequest.getTicker(),
+                    orderRequest.getQuantity(),
+                    orderRequest.getHitPrice()
+            );
             return ResponseEntity.ok().build();
         } catch (IncorrectInputException e) {
             ResponseEntity.badRequest().build();
@@ -195,7 +220,7 @@ public class MainController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @PreAuthorize("#username == authentication.name")
+    @PreAuthorize("#orderRequest.getUsername() == authentication.name")
     @DeleteMapping("/order/cancel/{username}")
     @Transactional
     public ResponseEntity<Void> cancelOrder(

@@ -12,7 +12,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
 
-  getUserBalance(username : string) : Observable<number>{
+  getUserBalance(username : string | null) : Observable<number>{
     return this.http.get<number>(`${this.url}balance/${username}`);
   }
 }

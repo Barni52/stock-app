@@ -1,6 +1,11 @@
 <header>
     <nav>
         <a routerLink="/" routerLinkActive="router-link-active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-        <a routerLink="/profile" routerLinkActive="router-link-active" [routerLinkActiveOptions]="{ exact: true }">Profile</a>
+        @if(isLoggedIn){
+            <div>Balance: {{balance}}</div>
+            <a routerLink="/profile" routerLinkActive="router-link-active" [routerLinkActiveOptions]="{ exact: true }">Profile</a>
+        } @else {
+            <a routerLink="/profile" routerLinkActive="router-link-active" [routerLinkActiveOptions]="{ exact: true }">Login</a>
+        }
     </nav>
 </header>

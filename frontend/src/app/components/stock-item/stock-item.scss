@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 16px; /* even spacing */
-  width: 700px;
+  width: 1000px;
   height: 60px;
   padding: 0 16px;
   border-radius: 12px;
@@ -52,6 +52,18 @@
 
 .stock-card .action {
   background: #22c55e;
+  color: #fff;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.stock-card .no-action {
+  background: gray;
   color: #fff;
   padding: 6px 14px;
   border: none;

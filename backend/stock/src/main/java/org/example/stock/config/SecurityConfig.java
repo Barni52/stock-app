@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/test").permitAll()
                         .requestMatchers("/stock").permitAll()
+                        .requestMatchers("/stock/order/**").permitAll() //temp
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

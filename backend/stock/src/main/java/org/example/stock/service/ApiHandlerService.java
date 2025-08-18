@@ -9,8 +9,8 @@ import java.util.Optional;
 @Service
 public class ApiHandlerService {
 
-    private final String[] stockTickers = {"AAPL"};
-    //private final String[] stockTickers = {"AAPL","TSLA","PFE","NVDA","CAT","OTLY","SQ","NEE"};
+    //private final String[] stockTickers = {"AAPL"};
+    private final String[] stockTickers = {"AAPL","TSLA","PFE","NVDA","CAT","OTLY","SQ","NEE"};
 
     private final TwelveDataService twelveDataService;
     private final StockParsingService stockParsingService;
@@ -37,7 +37,11 @@ public class ApiHandlerService {
 
                 stockRepository.save(stock);
             } else{
-                System.out.println("No stock with this ticker found: " + stockTicker);
+                Stock stock = new Stock();
+                stock.setTicker(stockTicker);
+                stock.setCurrentPrice(price);
+
+                stockRepository.save(stock);
             }
         }
     }
@@ -48,7 +52,9 @@ public class ApiHandlerService {
 
             Stock stock = stockParsingService.parse(jsonS);
 
-            stockRepository.save(stock);
+            if(stock.getCurrentPrice() != null){
+                stockRepository.save(stock);
+            }
         }
     }
 }

@@ -5,11 +5,13 @@ import { AuthService } from '../../services/auth-service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { take } from 'rxjs';
+import { OrderContainer } from "../../components/order-container/order-container";
+import { OwnedStockContainer } from "../../components/owned-stock-container/owned-stock-container";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, OrderContainer, OwnedStockContainer],
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
 })
@@ -40,6 +42,11 @@ export class Profile implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  logout() : void {
+    this.authService.logout();
+    this.router.navigate(['/'])
   }
 
   // New method to encapsulate fetching balance

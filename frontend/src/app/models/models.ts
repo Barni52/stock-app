@@ -8,3 +8,11 @@ export interface Stock {
   ticker : string;
   currentPrice : number;
 }
+
+export interface StockOrder {
+  id : number;
+  stock : Stock;
+  quantity : number;
+  hitPrice : number;
+  type : string;
+}
