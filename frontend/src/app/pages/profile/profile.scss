@@ -1,4 +1,36 @@
-.container-container{
-    display : flex;
-    justify-content:space-between;
+/* user-panel.css */
+p {
+  margin: 4px 0;
+  color: #e6ffe6;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+button {
+  padding: 6px 14px;
+  background-color: #00ff99;
+  color: #0d0d0d;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  margin: 6px 0;
+}
+
+button:hover {
+  background-color: #00cc77;
+  transform: scale(1.05);
+}
+
+.container-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  background-color: #0d0d0d;
+  border: 1px solid #00ff99;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 0 12px rgba(0, 255, 153, 0.3);
 }

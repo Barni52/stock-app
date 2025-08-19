@@ -16,14 +16,12 @@ export class StockContainer {
 
   constructor(private stockService : StockService){};
 
+  apiCall(){
+    this.stocks = this.stockService.getAllStocks();
+  }
+
   ngOnInit() {
     this.stocks = this.stockService.getAllStocks();
-
-    /*this.stocks = of(
-      [{ticker : "AAPL", currentPrice : 201}, 
-      {ticker : "RNND", currentPrice : 101}, 
-      {ticker : "LOL", currentPrice : 4301.2}]
-    )*/
   }
 
 

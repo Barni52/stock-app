@@ -1,0 +1,81 @@
+/* order-card.css */
+.order-card {
+  background-color: #0d0d0d;
+  border: 1px solid #00ff99;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  font-family: Arial, sans-serif;
+  color: #e6ffe6;
+  box-shadow: 0 0 12px rgba(0, 255, 153, 0.35);
+}
+
+.order-card span {
+  font-size: 14px;
+  background: rgba(0, 255, 153, 0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.order-card .ticker {
+  font-weight: bold;
+  font-size: 16px;
+  color: #00ff99;
+}
+
+.order-card .price {
+  font-weight: bold;
+  color: #66ffcc;
+}
+
+.order-card .total-amount {
+  font-weight: bold;
+  font-size: 15px;
+  color: #00ffaa;
+  margin-left: auto;
+}
+
+.order-card .amount-input {
+  background-color: #1a1a1a;
+  border: 1px solid #00ff99;
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: #e6ffe6;
+  width: 80px;
+}
+
+.order-card .amount-input:focus {
+  outline: none;
+  border-color: #00cc77;
+  box-shadow: 0 0 6px rgba(0, 255, 153, 0.5);
+}
+
+.order-card .action {
+  padding: 6px 14px;
+  background-color: #00ff99;
+  color: #0d0d0d;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.order-card .action:hover {
+  background-color: #00cc77;
+  transform: scale(1.05);
+}
+
+.order-card .no-action {
+  padding: 6px 14px;
+  background-color: #333;
+  color: #777;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: not-allowed;
+}

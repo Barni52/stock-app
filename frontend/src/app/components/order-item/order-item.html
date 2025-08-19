@@ -1,1 +1,13 @@
+<div>
+    <span>{{ticker()}}</span>
+    <span>{{currentPrice()}}$</span>
+    <span>Amount:{{quantity()}}</span>
+    <span>Hit Price:{{hitPrice()}}</span>
+    @if(sideType() == "sell") {
+        <span>Sell Order</span>
+    } @else {
+        <span>Buy Order</span>
+    }
+    <button (click)="cancel()">Cancel</button>
+</div>
 

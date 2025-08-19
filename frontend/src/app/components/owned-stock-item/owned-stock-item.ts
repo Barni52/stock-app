@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, EventEmitter, input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { StockService } from '../../services/stock-service';
@@ -18,6 +18,8 @@ export class OwnedStockItem {
   amount : number = 0;
   hitPrice : number = 0;
 
+  @Output() notifyParent = new EventEmitter<void>();
+
 
   constructor(private authService : AuthService, private stockService : StockService){}
 
@@ -28,7 +30,8 @@ export class OwnedStockItem {
   }
 
   sell(amount:number, hitPrice:number){
-    this.stockService.makeSellOrder(this.authService.getAuthenticatedUsername(), this.ticker(), amount, hitPrice)
+    this.stockService.makeSellOrder(this.authService.getAuthenticatedUsername(), this.ticker(), amount, hitPrice);
+    this.notifyParent.emit();
   }
 
   totalAmount(){

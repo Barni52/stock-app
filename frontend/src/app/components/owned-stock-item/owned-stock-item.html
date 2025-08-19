@@ -1,14 +1,15 @@
 <div class="order-card">
-    <span class="ticker">{{ticker()}}</span>
-    <span class="price">{{currentPrice().toFixed(2)}}$</span>
+    <span class="ticker">{{ticker()}}   </span>
+    <span>Owned amount: {{quantity()}}   </span>
+    <span class="price">{{currentPrice()}}$</span>
     <span>Amount:</span>
     <input class="amount-input" [(ngModel)]="amount" type="number" min="1" max="10000"/>
     <span>Hit Price:</span>
     <input class="amount-input" [(ngModel)]="hitPrice" type="number" min="1" max="10000"/>
     <span class="total-amount">{{totalAmount()}}$</span>
     @if(isLoggedIn) {
-        <button class="action" (click)="sell(amount, hitPrice)">Buy</button>
+        <button class="action" (click)="sell(amount, hitPrice)">Sell</button>
     } @else {
-        <button class="no-action" (click)="sell(amount, hitPrice)">Buy</button>
+        <button class="no-action" (click)="sell(amount, hitPrice)">Sell</button>
     }
 </div>

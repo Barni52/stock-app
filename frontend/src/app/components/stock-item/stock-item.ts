@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, EventEmitter, input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ export class StockItem {
   currentPrice = input(0);
   amount : number = 1;
   hitPrice : number = 1.0;
-
+  
   constructor(private authService : AuthService, private stockService : StockService){}
 
   ngOnInit() : void {

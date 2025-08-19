@@ -16,3 +16,9 @@ export interface StockOrder {
   hitPrice : number;
   type : string;
 }
+
+export interface OwnedStock {
+  id : number;
+  stock: Stock;
+  quantity  : number;
+}

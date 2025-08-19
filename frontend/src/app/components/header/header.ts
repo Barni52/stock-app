@@ -13,6 +13,7 @@ import { UserService } from '../../services/user-service';
 export class Header {
   isLoggedIn! : boolean;
   balance: number = 0;
+  username! : string | null;
 
 
   constructor(private authService : AuthService, private userService : UserService){};

@@ -1,4 +1,3 @@
-<p>stock-container works!</p>
 <ul>
     @for (stock of (stocks | async); track stock.ticker){
         <app-stock-item [ticker]=stock.ticker [currentPrice]=stock.currentPrice/>

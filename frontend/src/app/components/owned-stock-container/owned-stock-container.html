@@ -1,1 +1,8 @@
-<p>owned-stock-container works!</p>
+    @for (ownedStock of (ownedStocks | async); track ownedStock.id){
+        <app-owned-stock-item 
+            [ticker]=ownedStock.stock.ticker 
+            [currentPrice]=ownedStock.stock.currentPrice 
+            [quantity]=ownedStock.quantity
+            (notifyParent)="parentFunction()"
+        />
+    }

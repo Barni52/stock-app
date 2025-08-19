@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { Stock, StockOrder } from '../models/models';
+import { OwnedStock, Stock, StockOrder } from '../models/models';
 
 
 
@@ -22,16 +22,20 @@ export class StockService {
     );
   }
 
-  getAllOwnedStocks (username : string) : Observable<Stock[]> {
+  getAllOwnedStocks (username : string | null) : Observable<OwnedStock[]> {
     return this.http.get<any[]>(`${this.url}stock/owned/${username}`).pipe(
       map(data => data.map(item => ({
-        ticker : item.ticker,
-        currentPrice : item.currentPrice
+        id : item.id,
+        stock : {
+          ticker : item.stock.ticker,
+          currentPrice : item.stock.currentPrice
+        },
+        quantity : item.quantity
       })))
     );
   }
 
-  getAllOrders (username : string) : Observable<StockOrder[]> {
+  getAllOrders (username : string | null) : Observable<StockOrder[]> {
     return this.http.get<any[]>(`${this.url}stock/order/${username}`).pipe(
       map(response =>
         response.map(o => ({
@@ -74,6 +78,13 @@ export class StockService {
     console.log("hello")
     return this.http.post<void>(`${this.url}order/sell`, body).subscribe({
       next: () => console.log("Order placed"),
+      error: err => console.error(err)
+    });
+  }
+
+  cancelOrder(username : string | null, id : number){
+    return this.http.delete<void>(`${this.url}order/cancel/${username}/${id}`).subscribe({
+      next: () => {console.log("Order deleted")},
       error: err => console.error(err)
     });
   }

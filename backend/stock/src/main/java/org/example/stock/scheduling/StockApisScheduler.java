@@ -20,7 +20,7 @@ public class StockApisScheduler {
     }
 
     //Every 30 minutes
-    @Scheduled(fixedRate = 30 * minute, initialDelay = 20 * second)
+    @Scheduled(fixedRate = 30 * minute, initialDelay = 30 * minute)
     public void fetchHistoricalPriceForDay() {
         apiHandlerService.loadHistoricalDayPrice();
     }

@@ -68,7 +68,7 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:4200")
     @PreAuthorize("#username == authentication.name")
     @GetMapping("/stock/owned/{username}")
-    public ResponseEntity<List<Stock>> getOwnedStocks(
+    public ResponseEntity<List<OwnedStock>> getOwnedStocks(
             @AuthenticationPrincipal UserDetails user,
             @PathVariable String username){
         Optional<StockUser> stockUserOptional = userRepository.findByUsername(username);
@@ -81,12 +81,11 @@ public class MainController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(ownedStockRepository.findOwnedStocksByStockUser(stockUser)
-                .stream().map(OwnedStock::getStock).toList());
+        return ResponseEntity.ok(ownedStockRepository.findOwnedStocksByStockUser(stockUser));
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    //@PreAuthorize("#username == authentication.name")
+    @PreAuthorize("#username == authentication.name")
     @GetMapping("/stock/order/{username}")
     public ResponseEntity<List<StockOrder>> getActiveOrders(
             @AuthenticationPrincipal UserDetails user,
@@ -220,12 +219,12 @@ public class MainController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @PreAuthorize("#orderRequest.getUsername() == authentication.name")
-    @DeleteMapping("/order/cancel/{username}")
+    @PreAuthorize("#username == authentication.name")
+    @DeleteMapping("/order/cancel/{username}/{orderId}")
     @Transactional
     public ResponseEntity<Void> cancelOrder(
             @PathVariable String username,
-            @RequestParam String orderId
+            @PathVariable String orderId
     ){
         try {
             tradingService.cancelOrder(orderId, username);

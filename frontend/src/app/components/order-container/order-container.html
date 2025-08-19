@@ -1,1 +1,13 @@
-<p>order-container works!</p>
+<ul>
+    @for (order of (orders | async); track order.id){
+        <app-order-item 
+            [id]=order.id
+            [ticker]=order.stock.ticker 
+            [quantity]=order.quantity 
+            [sideType]=order.type 
+            [hitPrice]=order.hitPrice
+            [currentPrice]=order.stock.currentPrice
+            (notifyParent)="parentFunction()"
+        />
+    }
+</ul>

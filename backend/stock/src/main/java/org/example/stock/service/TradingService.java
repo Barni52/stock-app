@@ -158,7 +158,11 @@ public class TradingService {
         Optional<StockOrder> orderOptional = orderRepository.findById(id);
         Optional<StockUser> stockUserOptional = stockUserRepository.findByUsername(username);
 
-        if(orderOptional.isEmpty() || stockUserOptional.isEmpty()){
+        if( stockUserOptional.isEmpty()){
+            System.out.println("blip no such user");
+
+        } else if(orderOptional.isEmpty()){
+            System.out.println("blip no such order");
             throw new UserNotFoundException("User or order not found");
         }
 
